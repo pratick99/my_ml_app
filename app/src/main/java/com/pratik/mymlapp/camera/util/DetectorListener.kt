@@ -1,12 +1,12 @@
 package com.pratik.mymlapp.camera.util
 
-import org.tensorflow.lite.task.vision.detector.Detection
+import com.google.mlkit.vision.objects.DetectedObject
+
 
 interface DetectorListener {
     fun onError(error: String)
     fun onResults(
-        results: MutableList<Detection>?,
-        inferenceTime: Long,
+        results: MutableList<DetectedObject>?,
         imageHeight: Int,
         imageWidth: Int
     )
