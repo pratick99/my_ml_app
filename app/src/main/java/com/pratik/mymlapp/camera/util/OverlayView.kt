@@ -5,14 +5,13 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.google.mlkit.vision.objects.DetectedObject
 import com.pratik.mymlapp.R
-import org.tensorflow.lite.task.vision.detector.Detection
-import java.util.*
 import kotlin.math.max
 
 class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
 
-    private var results: List<Detection> = LinkedList<Detection>()
+    private var results = arrayListOf<DetectedObject>()
     private var boxPaint = Paint()
     private var textBackgroundPaint = Paint()
     private var textPaint = Paint()
@@ -63,9 +62,14 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
             canvas.drawRect(drawableRect, boxPaint)
 
             // Create text to display alongside detected objects
-            val drawableText =
-                result.categories[0].label + " " +
-                    String.format("%.2f", result.categories[0].score)
+            var drawableText = ""
+            var confidence = Float.MIN_VALUE
+            for (label in result.labels) {
+                confidence = max(label.confidence, confidence)
+                if (label.confidence == confidence) {
+                    drawableText = label.text
+                }
+            }
 
             // Draw rect behind display text
             textBackgroundPaint.getTextBounds(drawableText, 0, drawableText.length, bounds)
@@ -78,21 +82,17 @@ class OverlayView(context: Context?, attrs: AttributeSet?) : View(context, attrs
                 top + textHeight + Companion.BOUNDING_RECT_TEXT_PADDING,
                 textBackgroundPaint
             )
-
-            // Draw text for detected object
             canvas.drawText(drawableText, left, top + bounds.height(), textPaint)
         }
     }
 
     fun setResults(
-        detectionResults: MutableList<Detection>,
+        detectionResults: MutableList<DetectedObject>,
         imageHeight: Int,
         imageWidth: Int
     ) {
-        results = detectionResults
-
-        // PreviewView is in FILL_START mode. So we need to scale up the bounding box to match with
-        // the size that the captured images will be displayed.
+        results.clear()
+        results.addAll(detectionResults)
         scaleFactor = max(width * 1f / imageWidth, height * 1f / imageHeight)
     }
 

@@ -7,6 +7,7 @@ plugins {
 
 android {
     compileSdk 32
+    ndkVersion "21.3.6528147"
 
     defaultConfig {
         applicationId "com.pratik.mymlapp"
@@ -66,8 +67,13 @@ dependencies {
     implementation "androidx.camera:camera-video:${camerax_version}"
 
     // Tensorflow lite dependencies
-    implementation 'org.tensorflow:tensorflow-lite-task-vision:0.4.0'
-    implementation 'org.tensorflow:tensorflow-lite-gpu:2.9.0'
+//    implementation 'org.tensorflow:tensorflow-lite:2.8.0'
+//    implementation 'org.tensorflow:tensorflow-lite-gpu:2.8.0'
+//    implementation 'org.tensorflow:tensorflow-lite-support:2.8.0'
+
+    // Object detection and tracking features
+    implementation 'com.google.mlkit:object-detection:17.0.0'
+    implementation 'com.google.mlkit:object-detection-custom:17.0.0'
 
     //Navigation Library
     def nav_version = "2.3.5"
